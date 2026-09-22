@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Muhammad Hikmal Arsyaf — Profil Profesional</title>
+  
+  <!-- Font Google -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Library html2pdf untuk Ekspor Dokumen -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            kopiTua: '#130C08',
+            coklatGelap: '#1F140D',
+            coklatMedium: '#382215',
+            karamel: '#7D4723',
+            krem: '#F5EFEB',
+            aksenEmas: '#C99D42'
+          },
+          fontFamily: {
+            serif: ['"Playfair Display"', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-kopiTua text-krem font-sans antialiased selection:bg-aksenEmas selection:text-kopiTua">
+
+  <!-- ==================== NOTIFIKASI TOAST INTERAKTIF ==================== -->
+  <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-aksenEmas text-kopiTua font-semibold text-xs py-2.5 px-5 rounded-full shadow-2xl transition-all duration-300 opacity-0 pointer-events-none translate-y-4 flex items-center gap-2">
+    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+    <span id="toast-text">Teks berhasil disalin!</span>
+  </div>
+
+  <!-- ==================== MODAL LIGHTBOX FOTO ==================== -->
+  <div id="lightbox-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden items-center justify-center p-4 sm:p-8 transition-opacity duration-300 opacity-0">
+    <button onclick="tutupLightbox()" class="absolute top-5 right-5 sm:top-8 sm:right-8 text-krem/70 hover:text-aksenEmas transition p-2 bg-coklatGelap/80 rounded-full border border-coklatMedium">
+      <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+    </button>
+    <div class="max-w-4xl w-full max-h-[85vh] flex flex-col items-center">
+      <img id="lightbox-img" src="" alt="Pratinjau Foto" class="max-w-full max-h-[75vh] object-contain rounded-xl border border-coklatMedium shadow-2xl">
+      <p id="lightbox-caption" class="text-xs sm:text-sm text-krem/80 mt-4 text-center font-medium px-4"></p>
+    </div>
+  </div>
+
+  <!-- ==================== NAVIGASI UTAMA (RESPONSIF SEMUA DEVICE) ==================== -->
+  <nav class="fixed top-0 left-0 w-full z-40 bg-kopiTua/95 border-b border-coklatMedium/70 backdrop-blur-md transition-all duration-300">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3.5 sm:py-4 flex items-center justify-between">
+      
+      <!-- Logo Brand -->
+      <a href="#" class="font-serif text-base sm:text-lg tracking-wider text-krem hover:text-aksenEmas transition flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-aksenEmas"></span>
+        <span>HIKMAL ARSYAF</span>
+      </a>
+
+      <!-- Menu Desktop -->
+      <div class="hidden md:flex items-center space-x-8 text-xs font-semibold uppercase tracking-widest text-krem/80">
+        <a href="#tentang" class="hover:text-aksenEmas transition py-1">Tentang</a>
+        <a href="#kompetensi" class="hover:text-aksenEmas transition py-1">Fokus Kerja</a>
+        <a href="#galeri" class="hover:text-aksenEmas transition py-1">Portofolio</a>
+        <a href="#kontak" class="hover:text-aksenEmas transition py-1">Kontak</a>
+      </div>
+
+      <!-- Tombol Aksi Desktop -->
+      <div class="hidden sm:flex items-center gap-3">
+        <button id="btn-download-nav" onclick="unduhPDFProfil()" class="inline-flex items-center gap-2 bg-aksenEmas hover:bg-[#b88c34] active:scale-95 text-kopiTua text-xs font-bold px-4 py-2.5 rounded-lg transition shadow-sm">
+          <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+          <span class="btn-text">Unduh CV (PDF)</span>
+        </button>
+      </div>
+
+      <!-- Tombol Hamburger Mobile -->
+      <button onclick="toggleMobileMenu()" class="md:hidden p-2 text-krem/80 hover:text-aksenEmas rounded-lg border border-coklatMedium bg-coklatGelap transition" aria-label="Toggle Menu">
+        <svg id="hamburger-icon" class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+        <svg id="close-icon" class="w-5 h-5 fill-current hidden" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+
+    </div>
+
+    <!-- Dropdown Menu Mobile/Tablet -->
+    <div id="mobile-menu" class="hidden md:hidden bg-coklatGelap border-b border-coklatMedium px-6 py-5 transition-all">
+      <div class="flex flex-col space-y-4 text-xs font-medium uppercase tracking-widest text-krem/90">
+        <a href="#tentang" onclick="toggleMobileMenu()" class="hover:text-aksenEmas transition py-1">Tentang</a>
+        <a href="#kompetensi" onclick="toggleMobileMenu()" class="hover:text-aksenEmas transition py-1">Fokus Kerja</a>
+        <a href="#galeri" onclick="toggleMobileMenu()" class="hover:text-aksenEmas transition py-1">Portofolio</a>
+        <a href="#kontak" onclick="toggleMobileMenu()" class="hover:text-aksenEmas transition py-1">Kontak</a>
+      </div>
+      <div class="pt-5 mt-4 border-t border-coklatMedium/70 flex flex-col gap-3">
+        <button onclick="unduhPDFProfil(); toggleMobileMenu();" class="w-full inline-flex items-center justify-center gap-2 bg-aksenEmas text-kopiTua text-xs font-bold py-3 rounded-lg">
+          <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+          <span>Unduh CV Lengkap (PDF)</span>
+        </button>
+        <a href="https://wa.me/6285643622464" target="_blank" class="w-full inline-flex items-center justify-center gap-2 border border-coklatMedium text-krem text-xs font-medium py-3 rounded-lg bg-kopiTua">
+          <span>Hubungi via WhatsApp</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ==================== HERO SECTION ==================== -->
+  <section class="pt-28 sm:pt-36 pb-16 sm:pb-20 px-4 sm:px-6 max-w-6xl mx-auto">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+      
+      <!-- Teks Utama -->
+      <div class="lg:col-span-7 space-y-5 sm:space-y-6 text-center lg:text-left">
+        <div class="inline-flex items-center gap-2 text-[11px] sm:text-xs uppercase tracking-widest text-aksenEmas font-semibold bg-coklatGelap px-3 py-1 rounded-full border border-coklatMedium">
+          <span class="w-1.5 h-1.5 rounded-full bg-aksenEmas"></span>
+          <span>Pendidik & Praktisi Komunikasi</span>
+        </div>
+
+        <h1 class="font-serif text-3xl sm:text-5xl lg:text-6xl text-krem font-bold leading-tight">
+          Muhammad <br class="hidden sm:inline">
+          <span class="text-aksenEmas">Hikmal Arsyaf</span>
+        </h1>
+
+        <p class="text-krem/80 text-sm sm:text-base leading-relaxed max-w-xl mx-auto lg:mx-0">
+          Pendidik asrama dengan pengalaman lebih dari lima tahun dalam pengelolaan lingkungan santri, pembinaan karakter, dan komunikasi publik[cite: 3]. Lulusan Komunikasi dan Penyiaran Islam UMY dengan spesialisasi produksi siaran media dan sinematografi[cite: 3].
+        </p>
+
+        <!-- Aksi Cepat -->
+        <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 pt-2">
+          <button onclick="unduhPDFProfil()" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-karamel hover:bg-[#8f562e] active:scale-95 text-krem text-xs font-semibold px-6 py-3.5 rounded-lg transition shadow-md">
+            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+            <span class="btn-text">Unduh Resume (PDF)</span>
+          </button>
+
+          <a href="https://wa.me/6285643622464" target="_blank" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 border border-coklatMedium hover:border-aksenEmas active:scale-95 text-krem text-xs font-semibold px-6 py-3.5 rounded-lg transition bg-coklatGelap/60">
+            <svg class="w-4 h-4 fill-current text-aksenEmas" viewBox="0 0 24 24"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 15 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67Z"/></svg>
+            <span>WhatsApp Langsung</span>
+          </a>
+        </div>
+
+        <div class="pt-2 flex items-center justify-center lg:justify-start gap-2 text-xs text-krem/60">
+          <svg class="w-4 h-4 fill-current text-aksenEmas shrink-0" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          <span class="truncate">Surabaya, Jawa Timur • Bertugas di IDN Boarding School Bogor</span>[cite: 3]
+        </div>
+      </div>
+
+      <!-- Dua Foto Profil Utama -->
+      <div class="lg:col-span-5 grid grid-cols-2 gap-3 sm:gap-4 max-w-md mx-auto lg:max-w-none">
+        
+        <!-- Foto 1: hero_formal.jpg -->
+        <div class="space-y-2 cursor-pointer group" onclick="bukaLightbox('hero_formal.jpg', 'Foto Profil Formal — Muhammad Hikmal Arsyaf')">
+          <div class="rounded-xl overflow-hidden border border-coklatMedium bg-coklatGelap aspect-[3/4] relative">
+            <img 
+              src="hero_formal.jpg" 
+              alt="Muhammad Hikmal Arsyaf - Formal"[cite: 5]
+              class="w-full h-full object-cover object-top group-hover:scale-105 transition duration-500"
+              onerror="perbaikiJalurGambar(this, 'assets/images/profile/hero_formal.jpg')"
+            >
+            <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+              <span class="bg-black/60 p-2 rounded-full text-aksenEmas">
+                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+              </span>
+            </div>
+          </div>
+          <p class="text-[11px] text-krem/60 text-center font-medium group-hover:text-aksenEmas transition">Foto Profil Formal</p>
+        </div>
+
+        <!-- Foto 2: hero_candid.jpg -->
+        <div class="space-y-2 translate-y-4 sm:translate-y-6 cursor-pointer group" onclick="bukaLightbox('hero_candid.jpg', 'Potret Profesional — Muhammad Hikmal Arsyaf')">
+          <div class="rounded-xl overflow-hidden border border-aksenEmas/40 bg-coklatGelap aspect-[3/4] shadow-xl relative">
+            <img 
+              src="hero_candid.jpg" 
+              alt="Muhammad Hikmal Arsyaf - Jas"[cite: 5]
+              class="w-full h-full object-cover object-top group-hover:scale-105 transition duration-500"
+              onerror="perbaikiJalurGambar(this, 'assets/images/profile/hero_candid.jpg')"
+            >
+            <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+              <span class="bg-black/60 p-2 rounded-full text-aksenEmas">
+                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+              </span>
+            </div>
+          </div>
+          <p class="text-[11px] text-aksenEmas text-center font-medium group-hover:underline">Potret Profesional</p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==================== TENTANG SAYA ==================== -->
+  <section id="tentang" class="py-16 sm:py-20 bg-coklatGelap border-y border-coklatMedium/60">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+        
+        <!-- Foto Pendukung -->
+        <div class="lg:col-span-5 grid grid-cols-2 gap-3 order-2 lg:order-1 max-w-md mx-auto lg:max-w-none">
+          <div class="space-y-2 cursor-pointer group" onclick="bukaLightbox('about_educator.jpg', 'Aktivitas Belajar & Mengajar di Ruang Kelas')">
+            <div class="rounded-lg overflow-hidden border border-coklatMedium aspect-[4/5] bg-kopiTua relative">
+              <img 
+                src="about_educator.jpg" 
+                alt="Aktivitas di Kelas"[cite: 5]
+                class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                onerror="perbaikiJalurGambar(this, 'assets/images/profile/about_educator.jpg')"
+              >
+            </div>
+            <span class="block text-[11px] text-krem/60 text-center group-hover:text-aksenEmas transition">Aktivitas di Kelas</span>
+          </div>
+
+          <div class="space-y-2 cursor-pointer group" onclick="bukaLightbox('about_creative.jpg', 'Kelulusan Sarjana Komunikasi dan Penyiaran Islam UMY')">
+            <div class="rounded-lg overflow-hidden border border-coklatMedium aspect-[4/5] bg-kopiTua relative">
+              <img 
+                src="about_creative.jpg" 
+                alt="Sarjana KPI UMY"[cite: 5]
+                class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                onerror="perbaikiJalurGambar(this, 'assets/images/profile/about_creative.jpg')"
+              >
+            </div>
+            <span class="block text-[11px] text-krem/60 text-center group-hover:text-aksenEmas transition">Sarjana KPI UMY</span>
+          </div>
+        </div>
+
+        <!-- Uraian Ringkas -->
+        <div class="lg:col-span-7 space-y-4 order-1 lg:order-2">
+          <span class="text-xs uppercase tracking-widest text-aksenEmas font-semibold">Latar Belakang</span>
+          <h2 class="font-serif text-2xl sm:text-4xl text-krem font-bold">Pendidikan & Pengalaman</h2>
+          
+          <p class="text-krem/80 text-sm leading-relaxed">
+            Menyelesaikan pendidikan Sarjana Sosial (S.Sos) pada Program Studi Komunikasi dan Penyiaran Islam di Universitas Muhammadiyah Yogyakarta dengan indeks prestasi kumulatif 3,69[cite: 3]. Memiliki pengalaman memproduksi program siaran TV, film fiksi pendek, dan karya jurnalistik[cite: 3].
+          </p>
+
+          <p class="text-krem/80 text-sm leading-relaxed">
+            Kini mendedikasikan peran sebagai <strong>Dormitory Teacher di IDN Boarding School Bogor</strong>[cite: 3]. Bertanggung jawab mendampingi aktivitas harian santri, mengawasi belajar mandiri malam, menegakkan kedisiplinan, serta memfasilitasi komunikasi dengan orang tua murid[cite: 3].
+          </p>
+
+          <div class="pt-2 p-4 rounded-xl bg-kopiTua border border-coklatMedium flex items-start gap-3.5">
+            <svg class="w-5 h-5 text-aksenEmas shrink-0 mt-0.5 fill-current" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <div>
+              <h4 class="text-xs font-semibold text-krem">Best Inspirational Musyrif Award (2024)</h4>[cite: 3]
+              <p class="text-[11px] text-krem/70 mt-1 leading-relaxed">
+                Penghargaan Kategori Parenting di Madrasah Mu'allimin Muhammadiyah Yogyakarta atas dedikasi pengasuhan santri dan sinergi komunikasi bersama wali murid[cite: 3].
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== TIGA BIDANG KEAHLIAN ==================== -->
+  <section id="kompetensi" class="py-16 sm:py-20 px-4 sm:px-6 max-w-6xl mx-auto">
+    <div class="text-center max-w-2xl mx-auto mb-12 sm:mb-14 space-y-2">
+      <span class="text-xs uppercase tracking-widest text-aksenEmas font-semibold">Fokus Utama</span>
+      <h2 class="font-serif text-2xl sm:text-4xl text-krem font-bold">Bidang Keahlian</h2>
+      <p class="text-krem/70 text-xs sm:text-sm">Tiga pilar kompetensi yang diterapkan dalam kegiatan profesional.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6">
+      
+      <div class="bg-coklatGelap p-6 rounded-xl border border-coklatMedium hover:border-aksenEmas transition duration-300">
+        <div class="w-10 h-10 rounded-lg bg-karamel/20 text-aksenEmas flex items-center justify-center mb-4">
+          <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 3s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+        </div>
+        <h3 class="font-semibold text-base text-krem mb-2">Manajemen Asrama & Santri</h3>
+        <p class="text-xs text-krem/70 leading-relaxed">
+          Mengoordinasikan tim pembina asrama, memantau tata tertib lebih dari 500 santri, dan mengelola operasional lingkungan asrama secara terstruktur[cite: 3].
+        </p>
+      </div>
+
+      <div class="bg-coklatGelap p-6 rounded-xl border border-coklatMedium hover:border-aksenEmas transition duration-300">
+        <div class="w-10 h-10 rounded-lg bg-karamel/20 text-aksenEmas flex items-center justify-center mb-4">
+          <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z"/></svg>
+        </div>
+        <h3 class="font-semibold text-base text-krem mb-2">Produksi Media & Siaran</h3>
+        <p class="text-xs text-krem/70 leading-relaxed">
+          Keahlian pengoperasian kamera, penyuntingan klip, penulisan materi siaran jurnalistik, serta produksi konten video edukatif[cite: 3].
+        </p>
+      </div>
+
+      <div class="bg-coklatGelap p-6 rounded-xl border border-coklatMedium hover:border-aksenEmas transition duration-300">
+        <div class="w-10 h-10 rounded-lg bg-karamel/20 text-aksenEmas flex items-center justify-center mb-4">
+          <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"/></svg>
+        </div>
+        <h3 class="font-semibold text-base text-krem mb-2">Bimbingan Tajwid & Komunikasi</h3>
+        <p class="text-xs text-krem/70 leading-relaxed">
+          Tersertifikasi kaidah bacaan tajwid Tuhfatul Athfal, membimbing hafalan Al-Qur'an, dan memfasilitasi kebutuhan komunikasi wali murid[cite: 3].
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==================== ARSIP FOTO & PORTOFOLIO (INTERAKTIF LIGHTBOX) ==================== -->
+  <section id="galeri" class="py-16 sm:py-20 bg-coklatGelap border-t border-coklatMedium/60">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-8 sm:mb-10 gap-3">
+        <div>
+          <span class="text-xs uppercase tracking-widest text-aksenEmas font-semibold">Arsip Dokumentasi</span>
+          <h2 class="font-serif text-2xl sm:text-4xl text-krem font-bold mt-1">Galeri & Portofolio</h2>
+        </div>
+        <p class="text-xs text-krem/60 max-w-sm">
+          Klik pada setiap foto untuk memperbesar tampilan dan melihat detail arsip.
+        </p>
+      </div>
+
+      <!-- Grid 6 Kolom Foto: Responsive 1 col (hp), 2 col (tablet), 3 col (desktop) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+        
+        <!-- Kartu 1 -->
+        <div class="bg-kopiTua rounded-xl overflow-hidden border border-coklatMedium group cursor-pointer hover:border-aksenEmas transition duration-300" onclick="bukaLightbox('photo.jpg', 'Dokumentasi Akademik & Kelulusan — Wisuda Sarjana UMY')">
+          <div class="aspect-[4/3] overflow-hidden bg-coklatMedium/30 relative">
+            <img 
+              src="photo.jpg" 
+              alt="Dokumentasi Portofolio 1"[cite: 5]
+              class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+              onerror="perbaikiJalurGambar(this, 'assets/images/profile/photo.jpg')"
+            >
+            <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+              <span class="bg-black/60 px-3 py-1.5 rounded-full text-xs text-aksenEmas font-medium flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                <span>Buka Foto</span>
+              </span>
+            </div>
+          </div>
+          <div class="p-4">
+            <span class="text-[10px] uppercase font-semibold text-aksenEmas">Portofolio #01</span>
+            <h4 class="text-sm font-semibold text-krem mt-1 group-hover:text-aksenEmas transition">Dokumentasi Akademik & Kelulusan</h4>
+            <p class="text-xs text-krem/60 mt-1 leading-relaxed">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            </p>
+          </div>
+        </div>
+
+        <!-- Kartu 2 -->
+        <div class="bg-kopiTua rounded-xl overflow-hidden border border-coklatMedium group cursor-pointer hover:border-aksenEmas transition duration-300" onclick="bukaLightbox('photo.jpg', 'Dokumentasi Akademik & Kelulusan — Wisuda Sarjana UMY')">
+          <div class="aspect-[4/3] overflow-hidden bg-coklatMedium/30 relative">
+            <img 
+              src="photo.jpg" 
+              alt="Dokumentasi Portofolio 2"[cite: 5]
+              class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+              onerror="perbaikiJalurGambar(this, 'assets/images/profile/photo.jpg')"
+            >
+            <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+              <span class="bg-black/60 px-3 py-1.5 rounded-full text-xs text-aksenEmas font-medium flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                <span>Buka Foto</span>
+              </span>
+            </div>
+          </div>
+          <div class="p-4">
+            <span class="text-[10px] uppercase font-semibold text-aksenEmas">Portofolio #02</span>
+            <h4 class="text-sm font-semibold text-krem mt-1 group-hover:text-aksenEmas transition">Dokumentasi Akademik & Kelulusan</h4>
+            <p class="text-xs text-krem/60 mt-1 leading-relaxed">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            </p>
+          </div>
+        </div>
+
+        <!-- Kartu 3 -->
+        <div class="bg-kopiTua rounded-xl overflow-hidden border border-coklatMedium group cursor-pointer hover:border-aksenEmas transition duration-300" onclick="bukaLightbox('photo.jpg', 'Dokumentasi Akademik & Kelulusan — Wisuda Sarjana UMY')">
+          <div class="aspect-[4/3] overflow-hidden bg-coklatMedium/30 relative">
+            <img 
+              src="photo.jpg" 
+              alt="Dokumentasi Portofolio 3"[cite: 5]
+              class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+              onerror="perbaikiJalurGambar(this, 'assets/images/profile/photo.jpg')"
+            >
+            <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+              <span class="bg-black/60 px-3 py-1.5 rounded-full text-xs text-aksenEmas font-medium flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                <span>Buka Foto</span>
+              </span>
+            </div>
+          </div>
+          <div class="p-4">
+            <span class="text-[10px] uppercase font-semibold text-aksenEmas">Portofolio #03</span>
+            <h4 class="text-sm font-semibold text-krem mt-1 group-hover:text-aksenEmas transition">Dokumentasi Akademik & Kelulusan</h4>
+            <p class="text-xs text-krem/60 mt-1 leading-relaxed">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            </p>
+          </div>
+        </div>
+
+        <!-- Kartu 4 -->
+        <div class="bg-kopiTua rounded-xl overflow-hidden border border-coklatMedium group cursor-pointer hover:border-aksenEmas transition duration-300" onclick="bukaLightbox('photo.jpg', 'Dokumentasi Akademik & Kelulusan — Wisuda Sarjana UMY')">
+          <div class="aspect-[4/3] overflow-hidden bg-coklatMedium/30 relative">
+            <img 
+              src="photo.jpg" 
+              alt="Dokumentasi Portofolio 4"[cite: 5]
+              class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+              onerror="perbaikiJalurGambar(this, 'assets/images/profile/photo.jpg')"
+            >
+            <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+              <span class="bg-black/60 px-3 py-1.5 rounded-full text-xs text-aksenEmas font-medium flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                <span>Buka Foto</span>
+              </span>
+            </div>
+          </div>
+          <div class="p-4">
+            <span class="text-[10px] uppercase font-semibold text-aksenEmas">Portofolio #04</span>
+            <h4 class="text-sm font-semibold text-krem mt-1 group-hover:text-aksenEmas transition">Dokumentasi Akademik & Kelulusan</h4>
+            <p class="text-xs text-krem/60 mt-1 leading-relaxed">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            </p>
+          </div>
+        </div>
+
+        <!-- Kartu 5 -->
+        <div class="bg-kopiTua rounded-xl overflow-hidden border border-coklatMedium group cursor-pointer hover:border-aksenEmas transition duration-300" onclick="bukaLightbox('photo.jpg', 'Dokumentasi Akademik & Kelulusan — Wisuda Sarjana UMY')">
+          <div class="aspect-[4/3] overflow-hidden bg-coklatMedium/30 relative">
+            <img 
+              src="photo.jpg" 
+              alt="Dokumentasi Portofolio 5"[cite: 5]
+              class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+              onerror="perbaikiJalurGambar(this, 'assets/images/profile/photo.jpg')"
+            >
+            <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+              <span class="bg-black/60 px-3 py-1.5 rounded-full text-xs text-aksenEmas font-medium flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                <span>Buka Foto</span>
+              </span>
+            </div>
+          </div>
+          <div class="p-4">
+            <span class="text-[10px] uppercase font-semibold text-aksenEmas">Portofolio #05</span>
+            <h4 class="text-sm font-semibold text-krem mt-1 group-hover:text-aksenEmas transition">Dokumentasi Akademik & Kelulusan</h4>
+            <p class="text-xs text-krem/60 mt-1 leading-relaxed">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            </p>
+          </div>
+        </div>
+
+        <!-- Kartu 6 -->
+        <div class="bg-kopiTua rounded-xl overflow-hidden border border-coklatMedium group cursor-pointer hover:border-aksenEmas transition duration-300" onclick="bukaLightbox('photo.jpg', 'Dokumentasi Akademik & Kelulusan — Wisuda Sarjana UMY')">
+          <div class="aspect-[4/3] overflow-hidden bg-coklatMedium/30 relative">
+            <img 
+              src="photo.jpg" 
+              alt="Dokumentasi Portofolio 6"[cite: 5]
+              class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+              onerror="perbaikiJalurGambar(this, 'assets/images/profile/photo.jpg')"
+            >
+            <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+              <span class="bg-black/60 px-3 py-1.5 rounded-full text-xs text-aksenEmas font-medium flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                <span>Buka Foto</span>
+              </span>
+            </div>
+          </div>
+          <div class="p-4">
+            <span class="text-[10px] uppercase font-semibold text-aksenEmas">Portofolio #06</span>
+            <h4 class="text-sm font-semibold text-krem mt-1 group-hover:text-aksenEmas transition">Dokumentasi Akademik & Kelulusan</h4>
+            <p class="text-xs text-krem/60 mt-1 leading-relaxed">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==================== KONTAK RESMI ==================== -->
+  <section id="kontak" class="py-16 sm:py-20 px-4 sm:px-6 max-w-6xl mx-auto">
+    <div class="text-center max-w-xl mx-auto mb-10 sm:mb-12 space-y-2">
+      <span class="text-xs uppercase tracking-widest text-aksenEmas font-semibold">Saluran Resmi</span>
+      <h2 class="font-serif text-2xl sm:text-4xl text-krem font-bold">Informasi Kontak</h2>
+      <p class="text-xs sm:text-sm text-krem/70">Tersedia untuk keperluan administrasi, pendidikan, dan koordinasi kerja sama.</p>
+    </div>
+
+    <!-- 4 Kolom Kontak (Diseragamkan Penuh) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      
+      <!-- 1. WhatsApp -->
+      <a href="https://wa.me/6285643622464" target="_blank" class="p-5 bg-coklatGelap rounded-xl border border-coklatMedium hover:border-aksenEmas transition duration-300 group flex flex-col justify-between">
+        <div>
+          <div class="w-10 h-10 rounded-lg bg-karamel/20 flex items-center justify-center mb-4 group-hover:bg-aksenEmas transition">
+            <svg class="w-5 h-5 fill-current text-aksenEmas group-hover:text-kopiTua transition" viewBox="0 0 24 24"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 15 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67Z"/></svg>
+          </div>
+          <span class="text-[11px] text-krem/60">WhatsApp / Seluler</span>
+          <p class="text-sm font-semibold text-krem mt-1">+62 856-4362-2464</p>[cite: 3]
+        </div>
+        <span class="text-[10px] text-aksenEmas mt-3 group-hover:underline">Buka Chat WhatsApp →</span>
+      </a>
+
+      <!-- 2. Email -->
+      <div onclick="salinTeks('muhammadhikmal2704@gmail.com', 'Alamat surel berhasil disalin!')" class="p-5 bg-coklatGelap rounded-xl border border-coklatMedium hover:border-aksenEmas transition duration-300 group flex flex-col justify-between cursor-pointer">
+        <div>
+          <div class="w-10 h-10 rounded-lg bg-karamel/20 flex items-center justify-center mb-4 group-hover:bg-aksenEmas transition">
+            <svg class="w-5 h-5 fill-current text-aksenEmas group-hover:text-kopiTua transition" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+          </div>
+          <span class="text-[11px] text-krem/60">Alamat Surel</span>
+          <p class="text-xs font-semibold text-krem mt-1 truncate" title="muhammadhikmal2704@gmail.com">muhammadhikmal2704@gmail.com</p>[cite: 3]
+        </div>
+        <span class="text-[10px] text-aksenEmas mt-3 group-hover:underline">Klik untuk Salin Surel →</span>
+      </div>
+
+      <!-- 3. LinkedIn -->
+      <a href="https://www.linkedin.com/in/muhammad-hikmal-arsyaf-550b24230" target="_blank" rel="noopener noreferrer" class="p-5 bg-coklatGelap rounded-xl border border-coklatMedium hover:border-aksenEmas transition duration-300 group flex flex-col justify-between">
+        <div>
+          <div class="w-10 h-10 rounded-lg bg-karamel/20 flex items-center justify-center mb-4 group-hover:bg-aksenEmas transition">
+            <svg class="w-5 h-5 fill-current text-aksenEmas group-hover:text-kopiTua transition" viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9h2.76v8.37H6.46V10.9M7.84 6.81a1.62 1.62 0 1 0 0 3.24 1.62 1.62 0 0 0 0-3.24z"/></svg>
+          </div>
+          <span class="text-[11px] text-krem/60">Profil Profesional</span>
+          <p class="text-sm font-semibold text-krem mt-1">LinkedIn Profile</p>[cite: 3]
+        </div>
+        <span class="text-[10px] text-aksenEmas mt-3 group-hover:underline">Buka LinkedIn →</span>
+      </a>
+
+      <!-- 4. Google Drive Portofolio -->
+      <a href="https://drive.google.com/drive/folders/1ptcuRhx0KbH8BLA1KCB6dg8hJMv2HOSP?usp=sharing" target="_blank" rel="noopener noreferrer" class="p-5 bg-coklatGelap rounded-xl border border-coklatMedium hover:border-aksenEmas transition duration-300 group flex flex-col justify-between">
+        <div>
+          <div class="w-10 h-10 rounded-lg bg-karamel/20 flex items-center justify-center mb-4 group-hover:bg-aksenEmas transition">
+            <svg class="w-5 h-5 fill-current text-aksenEmas group-hover:text-kopiTua transition" viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
+          </div>
+          <span class="text-[11px] text-krem/60">Arsip Berkas & Karya</span>
+          <p class="text-sm font-semibold text-krem mt-1">Google Drive Portofolio</p>[cite: 3]
+        </div>
+        <span class="text-[10px] text-aksenEmas mt-3 group-hover:underline">Akses Dokumen Drive →</span>
+      </a>
+
+    </div>
+
+    <!-- Catatan Domisili & Tombol Unduh Cepat -->
+    <div class="mt-6 sm:mt-8 p-4 bg-coklatGelap/50 rounded-xl border border-coklatMedium/60 flex flex-col sm:flex-row items-center justify-between text-xs text-krem/70 gap-3 text-center sm:text-left">
+      <div class="flex items-center gap-2">
+        <svg class="w-4 h-4 fill-current text-aksenEmas shrink-0" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        <span>Ketintang Karah, Kec. Jambangan, Kota Surabaya, Jawa Timur 60232</span>[cite: 3]
+      </div>
+      <button onclick="unduhPDFProfil()" class="text-aksenEmas hover:underline font-semibold flex items-center gap-1 active:scale-95 transition">
+        <span>Unduh Lembar Resume Lengkap (PDF)</span>[cite: 3]
+        <span>→</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="border-t border-coklatMedium/70 bg-[#0E0805] text-krem/75 pt-12 sm:pt-16 pb-8">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 sm:gap-10 pb-10 border-b border-coklatMedium/40">
+        
+        <!-- Kolom Brand -->
+        <div class="md:col-span-5 space-y-3 sm:space-y-4">
+          <span class="font-serif text-xl sm:text-2xl text-krem font-bold tracking-wide block">
+            MUHAMMAD HIKMAL ARSYAF
+          </span>
+          <p class="text-xs text-krem/70 leading-relaxed max-w-sm">
+            Pendidik asrama berdedikasi dan praktisi komunikasi[cite: 3]. Fokus pada bimbingan karakter, penegakan kedisiplinan santri, dan kreasi konten media edukasi[cite: 3].
+          </p>
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-coklatGelap border border-coklatMedium text-[11px] text-aksenEmas">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>Aktif bertugas di IDN Boarding School Bogor</span>[cite: 3]
+          </div>
+        </div>
+
+        <!-- Kolom Navigasi -->
+        <div class="md:col-span-3 space-y-3">
+          <h4 class="text-xs uppercase font-bold text-aksenEmas tracking-widest">Navigasi Halaman</h4>
+          <ul class="space-y-2 text-xs text-krem/70">
+            <li><a href="#tentang" class="hover:text-aksenEmas transition">Tentang Diri</a></li>
+            <li><a href="#kompetensi" class="hover:text-aksenEmas transition">Bidang Keahlian</a></li>
+            <li><a href="#galeri" class="hover:text-aksenEmas transition">Arsip Portofolio</a></li>
+            <li><a href="#kontak" class="hover:text-aksenEmas transition">Kontak Resmi</a></li>
+          </ul>
+        </div>
+
+        <!-- Kolom Akses Berkas -->
+        <div class="md:col-span-4 space-y-3">
+          <h4 class="text-xs uppercase font-bold text-aksenEmas tracking-widest">Akses Langsung</h4>
+          <p class="text-xs text-krem/70">Unduh kurikulum vitae atau kirim pesan cepat melalui kontak berikut:</p>
+          <div class="flex flex-col gap-2 pt-1">
+            <button onclick="unduhPDFProfil()" class="w-full inline-flex items-center justify-center gap-2 bg-coklatMedium hover:bg-karamel active:scale-95 text-krem text-xs font-semibold py-2.5 px-4 rounded-lg transition border border-aksenEmas/20">
+              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+              <span class="btn-text">Unduh CV Resmi (PDF)</span>
+            </button>
+            <a href="https://wa.me/6285643622464" target="_blank" class="text-center text-xs text-aksenEmas hover:underline py-1">
+              Hubungi via WhatsApp (+62 856-4362-2464)[cite: 3]
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Baris Hak Cipta -->
+      <div class="pt-6 sm:pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-krem/50 gap-3 text-center">
+        <p>© 2026 Muhammad Hikmal Arsyaf. Seluruh hak cipta dilindungi.</p>
+        <a href="#" onclick="window.scrollTo({top: 0, behavior: 'smooth'}); return false;" class="text-krem/70 hover:text-aksenEmas transition flex items-center gap-1 font-medium">
+          <span>Kembali ke Atas</span>
+          <span>↑</span>
+        </a>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- ==================== TOMBOL MENGAMBANG SCROLL TO TOP ==================== -->
+  <button id="btn-scroll-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="fixed bottom-6 right-6 z-40 p-3 rounded-full bg-aksenEmas text-kopiTua shadow-2xl opacity-0 pointer-events-none translate-y-3 transition-all duration-300 hover:scale-110 active:scale-95" aria-label="Scroll to top">
+    <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>
+  </button>
+
+  <!-- ==================== TEMPLATE RENDER DOKUMEN PDF (A4 RESMI) ==================== -->
+  <div id="pdf-container" style="display: none;">
+    <div id="cv-print-area" style="font-family: Arial, sans-serif; color: #222; background-color: #fff; padding: 40px; width: 800px; box-sizing: border-box; line-height: 1.45;">
+      
+      <div style="border-bottom: 2px solid #1F140D; padding-bottom: 12px; margin-bottom: 18px;">
+        <h1 style="font-size: 24px; margin: 0; color: #130C08; letter-spacing: 0.5px;">MUHAMMAD HIKMAL ARSYAF</h1>
+        <p style="font-size: 11px; margin: 4px 0 0 0; color: #444;">
+          +62 856-4362-2464 | muhammadhikmal2704@gmail.com | Ketintang Karah, Jambangan, Surabaya, Jawa Timur
+        </p>
+        <p style="font-size: 10px; margin: 2px 0 0 0; color: #666;">
+          LinkedIn: linkedin.com/in/muhammad-hikmal-arsyaf-550b24230 | Google Drive Portofolio Terlampir
+        </p>
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <h3 style="font-size: 12px; text-transform: uppercase; font-weight: bold; color: #382215; border-bottom: 1px solid #ddd; padding-bottom: 3px; margin-bottom: 6px;">
+          Ringkasan Profesional
+        </h3>
+        <p style="font-size: 10.5px; margin: 0; text-align: justify; color: #333;">
+          Pendidik asrama dengan pengalaman lebih dari lima tahun dalam manajemen lingkungan santri, pembinaan karakter, dan komunikasi kelembagaan dengan orang tua murid. Menguasai produksi konten siaran televisi, jurnalistik kampus, serta memiliki sertifikasi pengajaran tajwid Al-Qur'an.
+        </p>
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <h3 style="font-size: 12px; text-transform: uppercase; font-weight: bold; color: #382215; border-bottom: 1px solid #ddd; padding-bottom: 3px; margin-bottom: 8px;">
+          Pengalaman Kerja Utama
+        </h3>
+        
+        <div style="margin-bottom: 10px;">
+          <div style="display: flex; justify-content: space-between; font-size: 10.5px; font-weight: bold;">
+            <span>IDN Boarding School Bogor — Dormitory Teacher</span>
+            <span style="color: #666;">Nov 2025 – Sekarang</span>
+          </div>
+          <p style="font-size: 10px; margin: 2px 0 0 0; color: #444;">
+            • Membimbing santri dalam rutinitas harian, sesi belajar mandiri malam, kedisiplinan asrama, serta laporan berkala ke orang tua.
+          </p>
+        </div>
+
+        <div style="margin-bottom: 10px;">
+          <div style="display: flex; justify-content: space-between; font-size: 10.5px; font-weight: bold;">
+            <span>Madrasah Mu'allimin Muhammadiyah Yogyakarta — Dormitory Assistant</span>
+            <span style="color: #666;">Jul 2023 – Sep 2025</span>
+          </div>
+          <p style="font-size: 10px; margin: 2px 0 0 0; color: #444;">
+            • Mengoordinasikan 30 musyrif dan membina lebih dari 500 santri. Meraih Best Inspirational Musyrif Award 2024 kategori Parenting.
+          </p>
+        </div>
+
+        <div>
+          <div style="display: flex; justify-content: space-between; font-size: 10.5px; font-weight: bold;">
+            <span>Islamic Centre Binbaz & MIT Ibnu Mas'ud — Dormitory Assistant</span>
+            <span style="color: #666;">2020 – 2023</span>
+          </div>
+          <p style="font-size: 10px; margin: 2px 0 0 0; color: #444;">
+            • Membimbing hafalan Al-Qur'an dan memberikan pelayanan informasi penerimaan santri baru.
+          </p>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <h3 style="font-size: 12px; text-transform: uppercase; font-weight: bold; color: #382215; border-bottom: 1px solid #ddd; padding-bottom: 3px; margin-bottom: 6px;">
+          Pendidikan & Proyek Komunikasi
+        </h3>
+        <div style="display: flex; justify-content: space-between; font-size: 10.5px; font-weight: bold;">
+          <span>Universitas Muhammadiyah Yogyakarta — Sarjana KPI (S.Sos), IPK 3,69/4,00</span>
+          <span style="color: #666;">Sep 2021 – Jul 2025</span>
+        </div>
+        <p style="font-size: 10px; margin: 2px 0 0 0; color: #444;">
+          • Produser Program Televisi "KUCIL" di Studio UNISA Yogyakarta (2024).<br>
+          • Produser Film Pendek "INDEKOST" bersama MMKINEKLUB UMY (2024).<br>
+          • Tim Liputan Berita ICC Jurnalistik KPI UMY (2023–2024).
+        </p>
+      </div>
+
+      <div>
+        <h3 style="font-size: 12px; text-transform: uppercase; font-weight: bold; color: #382215; border-bottom: 1px solid #ddd; padding-bottom: 3px; margin-bottom: 6px;">
+          Sertifikasi & Keterampilan
+        </h3>
+        <p style="font-size: 10px; margin: 0; color: #333;">
+          <strong>Sertifikat:</strong> Tuhfatul Athfal (Tajwid Al-Qur'an, Yogyakarta).<br>
+          <strong>Keahlian Teknis:</strong> CapCut Video Editing, Canva Design, Kamera Foto/Video, MS Office.<br>
+          <strong>Bahasa:</strong> Indonesia (Aktif), Inggris (Menengah), Arab (Pasif).
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== SKRIP INTERAKTIVITAS LENGKAP ==================== -->
+  <script>
+    // 1. Toggle Mobile Menu Drawer
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      const burger = document.getElementById('hamburger-icon');
+      const close = document.getElementById('close-icon');
+
+      if (menu.classList.contains('hidden')) {
+        menu.classList.remove('hidden');
+        burger.classList.add('hidden');
+        close.classList.remove('hidden');
+      } else {
+        menu.classList.add('hidden');
+        burger.classList.remove('hidden');
+        close.classList.add('hidden');
+      }
+    }
+
+    // 2. Fitur Lightbox Foto Modal
+    function bukaLightbox(src, caption) {
+      const modal = document.getElementById('lightbox-modal');
+      const img = document.getElementById('lightbox-img');
+      const cap = document.getElementById('lightbox-caption');
+
+      img.src = src;
+      cap.textContent = caption || '';
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      setTimeout(() => modal.classList.remove('opacity-0'), 10);
+      document.body.style.overflow = 'hidden';
+    }
+
+    function tutupLightbox() {
+      const modal = document.getElementById('lightbox-modal');
+      modal.classList.add('opacity-0');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.style.overflow = '';
+      }, 250);
+    }
+
+    // Tutup lightbox dengan tombol ESC atau klik area luar
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') tutupLightbox();
+    });
+    document.getElementById('lightbox-modal').addEventListener('click', (e) => {
+      if (e.target.id === 'lightbox-modal') tutupLightbox();
+    });
+
+    // 3. Fitur Salin Teks ke Clipboard + Toast Notifikasi
+    function salinTeks(teks, pesan) {
+      navigator.clipboard.writeText(teks).then(() => {
+        const toast = document.getElementById('toast');
+        const toastText = document.getElementById('toast-text');
+        toastText.textContent = pesan;
+        toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+        toast.classList.add('opacity-100', 'translate-y-0');
+
+        setTimeout(() => {
+          toast.classList.remove('opacity-100', 'translate-y-0');
+          toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+        }, 2500);
+      });
+    }
+
+    // 4. Tombol Mengambang Scroll-to-Top
+    const btnScrollTop = document.getElementById('btn-scroll-top');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 350) {
+        btnScrollTop.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-3');
+        btnScrollTop.classList.add('opacity-100', 'translate-y-0');
+      } else {
+        btnScrollTop.classList.remove('opacity-100', 'translate-y-0');
+        btnScrollTop.classList.add('opacity-0', 'pointer-events-none', 'translate-y-3');
+      }
+    });
+
+    // 5. Penanganan Jalur Gambar Otomatis
+    function perbaikiJalurGambar(imgElement, alternativePath) {
+      if (!imgElement.getAttribute('data-retried')) {
+        imgElement.setAttribute('data-retried', 'true');
+        imgElement.src = alternativePath;
+      } else {
+        imgElement.src = 'photo.jpg';
+      }
+    }
+
+    // 6. Fungsi Unduh PDF Otomatis dengan Feedback Visual
+    function unduhPDFProfil() {
+      const container = document.getElementById('pdf-container');
+      const element = document.getElementById('cv-print-area');
+      const allBtnTexts = document.querySelectorAll('.btn-text');
+
+      // Tampilkan status memproses
+      allBtnTexts.forEach(btn => btn.textContent = 'Menyiapkan PDF...');
+      container.style.display = 'block';
+
+      const opsi = {
+        margin: [10, 10, 10, 10],
+        filename: 'CV-Muhammad-Hikmal-Arsyaf.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      html2pdf().set(opsi).from(element).save().then(() => {
+        container.style.display = 'none';
+        allBtnTexts.forEach(btn => btn.textContent = 'Unduh CV (PDF)');
+        salinTeks('', 'Berkas CV PDF berhasil diunduh!');
+      }).catch(err => {
+        console.error('Gagal membuat PDF:', err);
+        container.style.display = 'none';
+        allBtnTexts.forEach(btn => btn.textContent = 'Unduh CV (PDF)');
+        window.print();
+      });
+    }
+  </script>
+
+</body>
+</html>
